@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socratis | AI Learning Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">S</div>
+                <h1>Socratis</h1>
+            </div>
+            <p class="tagline">Your AI-Powered Learning Path Designer</p>
+        </header>
+
+        <main>
+            <div class="chat-wrapper">
+                <div id="chat-history" class="chat-history">
+                    <div class="message system">
+                        <div class="avatar">🤖</div>
+                        <div class="content">
+                            Hello! I am Socratis. What would you like to learn today? Tell me the topic, your current level, and how much time you have.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="architecture-explorer">
+                    <h3>Agent Logic Inspector</h3>
+                    <div class="steps-container">
+                        <div class="step" id="step-1">
+                            <span class="step-num">1</span>
+                            <span class="step-name">Input Understanding</span>
+                            <div class="step-data" id="data-understanding">Waiting...</div>
+                        </div>
+                        <div class="step" id="step-2">
+                            <span class="step-num">2</span>
+                            <span class="step-name">State Tracker</span>
+                            <div class="step-data" id="data-state">Waiting...</div>
+                        </div>
+                        <div class="step" id="step-3">
+                            <span class="step-num">3</span>
+                            <span class="step-name">Task Planner</span>
+                            <div class="step-data" id="data-planner">Waiting...</div>
+                        </div>
+                        <div class="step" id="step-4">
+                            <span class="step-num">4</span>
+                            <span class="step-name">Output Generator</span>
+                            <div class="step-data" id="data-generator">Waiting...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <input type="text" id="user-input" placeholder="e.g., I want to learn React in 7 days, I'm an intermediate dev." autocomplete="off">
+                    <button id="send-btn">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
