@@ -2,9 +2,6 @@
 
 <div align="center">
 
-![Socratis Banner](https://img.shields.io/badge/AI-Agent-6366f1?style=for-the-badge&logo=openai&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Active-10b981?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 **An intelligent AI agent that creates personalized learning roadmaps for students**
 
