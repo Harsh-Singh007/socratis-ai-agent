@@ -316,6 +316,182 @@ button svg {
     background: var(--text-dim);
 }
 
+/* Typing Indicator */
+.typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        opacity: 0.3;
+        transform: translateY(0);
+    }
+    30% {
+        opacity: 1;
+        transform: translateY(-8px);
+    }
+}
+
+/* Error Messages */
+.message.error .content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+/* Clickable Messages */
+.message.clickable {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.message.clickable:hover {
+    transform: translateX(4px);
+}
+
+.message.clickable .content {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+    border: 1px solid var(--primary);
+}
+
+/* API Key Modal */
+.api-key-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h2 {
+    margin-bottom: 16px;
+    font-size: 24px;
+    color: var(--text-main);
+}
+
+.modal-content p {
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.modal-content p.small {
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.modal-content p a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.modal-content p a:hover {
+    text-decoration: underline;
+}
+
+.modal-content input {
+    width: 100%;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text-main);
+    font-size: 14px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    width: auto;
+    height: auto;
+}
+
+.modal-buttons button.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.modal-buttons button.primary:hover {
+    background: #4f46e5;
+    transform: translateY(-2px);
+}
+
+.modal-buttons button.secondary {
+    background: var(--glass);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+}
+
+.modal-buttons button.secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .chat-wrapper {

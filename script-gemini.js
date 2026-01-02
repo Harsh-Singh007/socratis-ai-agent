@@ -1,11 +1,13 @@
 // ============================================
-// REAL AI-POWERED AGENT WITH OPENAI INTEGRATION
+// GEMINI-POWERED AI AGENT (FREE ALTERNATIVE)
 // ============================================
+// This version uses Google's Gemini API which has a generous free tier
+// To use this version, rename this file to script.js
 
 // Configuration
-let API_KEY = localStorage.getItem('openai_api_key') || '';
-const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
-const MODEL = 'gpt-3.5-turbo';
+let API_KEY = localStorage.getItem('gemini_api_key') || '';
+const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const MODEL = 'gemini-pro';
 
 // State Management
 let conversationHistory = [];
@@ -45,20 +47,19 @@ For general questions, provide clear, helpful answers with examples when appropr
 // LAYER 1: INPUT UNDERSTANDING
 // ============================================
 function analyzeInput(input) {
-    // Extract key information from user input
     const analysis = {
         intent: detectIntent(input),
         entities: extractEntities(input),
         sentiment: 'neutral',
         timestamp: new Date().toISOString()
     };
-    
+
     return analysis;
 }
 
 function detectIntent(input) {
     const lowerInput = input.toLowerCase();
-    
+
     if (lowerInput.match(/\b(learn|study|master|understand)\b/)) {
         return 'learning_request';
     } else if (lowerInput.match(/\b(what|how|why|when|where|explain)\b/)) {
@@ -72,19 +73,16 @@ function detectIntent(input) {
 
 function extractEntities(input) {
     const entities = {};
-    
-    // Extract topic
+
     const topicMatch = input.match(/(?:learn|study|about|master)\s+([\w\s.#+-]+?)(?:\s+in|\s+for|,|$)/i);
     if (topicMatch) entities.topic = topicMatch[1].trim();
-    
-    // Extract duration
+
     const durationMatch = input.match(/(\d+)\s*(days?|weeks?|months?|hours?)/i);
     if (durationMatch) entities.duration = `${durationMatch[1]} ${durationMatch[2]}`;
-    
-    // Extract level
+
     const levelMatch = input.match(/(beginner|intermediate|advanced|expert)/i);
     if (levelMatch) entities.level = levelMatch[0].toLowerCase();
-    
+
     return entities;
 }
 
@@ -98,22 +96,21 @@ function updateConversationState(userInput, analysis) {
         extractedInfo: analysis.entities,
         conversationContext: getConversationContext()
     };
-    
+
     return state;
 }
 
 function getConversationContext() {
-    // Analyze recent conversation to understand context
     const recentMessages = conversationHistory.slice(-6);
     const topics = new Set();
-    
+
     recentMessages.forEach(msg => {
         if (msg.role === 'user') {
-            const entities = extractEntities(msg.content);
+            const entities = extractEntities(msg.parts[0].text);
             if (entities.topic) topics.add(entities.topic);
         }
     });
-    
+
     return {
         topics: Array.from(topics),
         messageCount: conversationHistory.length
@@ -129,8 +126,7 @@ function planResponse(state, analysis) {
         requiresContext: true,
         temperature: 0.7
     };
-    
-    // Adjust strategy based on intent
+
     if (analysis.intent === 'learning_request') {
         strategy.action = 'create_learning_plan';
         strategy.temperature = 0.8;
@@ -138,72 +134,75 @@ function planResponse(state, analysis) {
         strategy.action = 'answer_question';
         strategy.temperature = 0.6;
     }
-    
+
     return strategy;
 }
 
 // ============================================
-// LAYER 4: AI RESPONSE GENERATOR
+// LAYER 4: AI RESPONSE GENERATOR (GEMINI)
 // ============================================
 async function generateAIResponse(userInput) {
-    // Check if API key is set
     if (!API_KEY) {
         return {
             success: false,
-            error: 'API key not configured. Please set your OpenAI API key.',
+            error: 'API key not configured. Please set your Gemini API key.',
             showConfig: true
         };
     }
-    
+
     // Add user message to history
     conversationHistory.push({
         role: 'user',
-        content: userInput
+        parts: [{ text: userInput }]
     });
-    
+
     try {
-        // Prepare messages for API
-        const messages = [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...conversationHistory.slice(-10) // Keep last 10 messages for context
-        ];
-        
-        // Call OpenAI API
-        const response = await fetch(API_ENDPOINT, {
+        // Build conversation context for Gemini
+        let fullPrompt = SYSTEM_PROMPT + "\n\nConversation:\n";
+
+        // Add recent conversation history
+        conversationHistory.slice(-10).forEach(msg => {
+            const role = msg.role === 'user' ? 'User' : 'Assistant';
+            fullPrompt += `${role}: ${msg.parts[0].text}\n`;
+        });
+
+        // Call Gemini API
+        const response = await fetch(`${API_ENDPOINT}?key=${API_KEY}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                model: MODEL,
-                messages: messages,
-                temperature: 0.7,
-                max_tokens: 1000,
-                stream: false
+                contents: [{
+                    parts: [{ text: fullPrompt }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 1000,
+                }
             })
         });
-        
+
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.error?.message || 'API request failed');
         }
-        
+
         const data = await response.json();
-        const aiMessage = data.choices[0].message.content;
-        
+        const aiMessage = data.candidates[0].content.parts[0].text;
+
         // Add AI response to history
         conversationHistory.push({
-            role: 'assistant',
-            content: aiMessage
+            role: 'model',
+            parts: [{ text: aiMessage }]
         });
-        
+
         return {
             success: true,
             message: aiMessage,
-            usage: data.usage
+            usage: { total_tokens: 'N/A (Gemini)' }
         };
-        
+
     } catch (error) {
         console.error('AI Error:', error);
         return {
@@ -218,18 +217,16 @@ async function generateAIResponse(userInput) {
 // ============================================
 async function processInput(input) {
     if (isProcessing) return;
-    
+
     isProcessing = true;
     const userMessage = input.trim();
-    
-    // Add user message to UI
+
     addMessage(userMessage, 'user');
     userInputEl.value = '';
-    
-    // Disable input while processing
+
     userInputEl.disabled = true;
     sendBtn.disabled = true;
-    
+
     try {
         // STEP 1: Analyze Input
         updateUIStep(1, "Analyzing input...");
@@ -239,7 +236,7 @@ async function processInput(input) {
             intent: analysis.intent,
             entities: analysis.entities
         }, null, 2));
-        
+
         // STEP 2: Update State
         updateUIStep(2, "Updating conversation state...");
         await delay(300);
@@ -248,37 +245,33 @@ async function processInput(input) {
             messages: state.messageCount,
             context: state.conversationContext
         }, null, 2));
-        
+
         // STEP 3: Plan Response
         updateUIStep(3, "Planning response strategy...");
         await delay(300);
         const plan = planResponse(state, analysis);
         updateUIStep(3, JSON.stringify(plan, null, 2));
-        
+
         // STEP 4: Generate AI Response
-        updateUIStep(4, "Calling AI API...");
-        
-        // Show typing indicator
+        updateUIStep(4, "Calling Gemini API...");
+
         const typingId = addTypingIndicator();
-        
         const result = await generateAIResponse(userMessage);
-        
-        // Remove typing indicator
         removeTypingIndicator(typingId);
-        
+
         if (result.success) {
             updateUIStep(4, `✓ Response generated\nTokens: ${result.usage?.total_tokens || 'N/A'}`);
             addMessage(result.message, 'system');
         } else {
             updateUIStep(4, `✗ Error: ${result.error}`);
-            
+
             if (result.showConfig) {
                 showAPIKeyPrompt();
             } else {
                 addMessage(`Sorry, I encountered an error: ${result.error}`, 'system', true);
             }
         }
-        
+
     } catch (error) {
         console.error('Processing error:', error);
         updateUIStep(4, `✗ Error: ${error.message}`);
@@ -303,20 +296,19 @@ function updateUIStep(step, text) {
 function addMessage(text, side, isError = false) {
     const msg = document.createElement('div');
     msg.className = `message ${side}${isError ? ' error' : ''}`;
-    
-    // Convert markdown-style formatting to HTML
+
     let formattedText = text
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
         .replace(/\n/g, '<br>');
-    
+
     msg.innerHTML = `
         <div class="avatar">${side === 'user' ? '👤' : '🤖'}</div>
         <div class="content">${formattedText}</div>
     `;
     chatHistoryEl.appendChild(msg);
     chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
-    
+
     return msg;
 }
 
@@ -347,10 +339,10 @@ function showAPIKeyPrompt() {
     modal.className = 'api-key-modal';
     modal.innerHTML = `
         <div class="modal-content">
-            <h2>🔑 API Key Required</h2>
-            <p>To use real AI capabilities, you need an OpenAI API key.</p>
-            <p class="small">Get your key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a></p>
-            <input type="password" id="api-key-input" placeholder="sk-..." />
+            <h2>🔑 Gemini API Key Required</h2>
+            <p>To use real AI capabilities with Google Gemini (FREE!), you need an API key.</p>
+            <p class="small">Get your free key from <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></p>
+            <input type="password" id="api-key-input" placeholder="Your Gemini API key..." />
             <div class="modal-buttons">
                 <button id="save-key-btn" class="primary">Save Key</button>
                 <button id="cancel-key-btn" class="secondary">Cancel</button>
@@ -358,17 +350,17 @@ function showAPIKeyPrompt() {
         </div>
     `;
     document.body.appendChild(modal);
-    
+
     document.getElementById('save-key-btn').addEventListener('click', () => {
         const key = document.getElementById('api-key-input').value.trim();
         if (key) {
             API_KEY = key;
-            localStorage.setItem('openai_api_key', key);
+            localStorage.setItem('gemini_api_key', key);
             modal.remove();
-            addMessage('API key saved! You can now chat with me.', 'system');
+            addMessage('Gemini API key saved! You can now chat with me for FREE!', 'system');
         }
     });
-    
+
     document.getElementById('cancel-key-btn').addEventListener('click', () => {
         modal.remove();
     });
@@ -397,21 +389,20 @@ userInputEl.addEventListener('keypress', (e) => {
 // INITIALIZATION
 // ============================================
 window.addEventListener('load', () => {
-    // Check if API key is configured
     if (!API_KEY) {
         setTimeout(() => {
-            addMessage('👋 Welcome! To enable real AI conversations, please configure your OpenAI API key. Click the message below to set it up.', 'system');
-            
+            addMessage('👋 Welcome! To enable FREE AI conversations with Google Gemini, please configure your API key. Click the message below to set it up.', 'system');
+
             const setupMsg = document.createElement('div');
             setupMsg.className = 'message system clickable';
             setupMsg.innerHTML = `
                 <div class="avatar">⚙️</div>
-                <div class="content">Click here to configure API key</div>
+                <div class="content">Click here to configure FREE Gemini API key</div>
             `;
             setupMsg.addEventListener('click', showAPIKeyPrompt);
             chatHistoryEl.appendChild(setupMsg);
         }, 500);
     }
-    
+
     userInputEl.focus();
 });
