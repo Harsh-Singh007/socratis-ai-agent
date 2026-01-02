@@ -5,6 +5,7 @@
 ## 🧾 SECTION 1: BASIC DETAILS
 
 **Name:** Harsh Singh
+
 **AI Agent Title / Use Case:** Socratis - AI Learning Path Designer for Students
 
 ---

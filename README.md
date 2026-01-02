@@ -213,11 +213,13 @@ This project was built as part of an AI Agent assignment to demonstrate:
 
 ## Author
 
-**Harsh Singh**
+**Name:** Harsh Singh
 
-- GitHub: [@Harsh-Singh007](https://github.com/Harsh-Singh007)
-- Project: Socratis AI Learning Path Designer
-- Date: January 2, 2026
+**AI Agent Title / Use Case:** Socratis - AI Learning Path Designer for Students
+
+**GitHub:** [@Harsh-Singh007](https://github.com/Harsh-Singh007)
+
+**Date:** January 2, 2026
 
 ---
 
