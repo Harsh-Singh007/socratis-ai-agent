@@ -8,9 +8,17 @@
 
 **An intelligent AI agent that creates personalized learning roadmaps for students**
 
-[Live Demo](#-live-demo) • [Features](#-features) • [Architecture](#-architecture) • [Installation](#-installation)
+[Live Demo](https://socratis-ai-agent.vercel.app/) • [Features](#-features) • [Architecture](#%EF%B8%8F-architecture) • [Installation](#-installation)
 
 </div>
+
+---
+
+## 🌐 Live Demo
+
+**[Try Socratis Live →](https://socratis-ai-agent.vercel.app/)**
+
+Experience the AI Learning Path Designer in action! No installation required.
 
 ---
 
@@ -82,7 +90,7 @@ Socratis implements the **4-Layer AI Agent Model**:
 ### Option 1: Direct Open (Simplest)
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/socratis-ai-agent.git
+git clone https://github.com/Harsh-Singh007/socratis-ai-agent.git
 
 # Navigate to directory
 cd socratis-ai-agent
@@ -206,17 +214,17 @@ This project was built as part of an AI Agent assignment to demonstrate:
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Harsh Singh**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@Harsh-Singh007](https://github.com/Harsh-Singh007)
 - Project: Socratis AI Learning Path Designer
 - Date: January 2, 2026
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
